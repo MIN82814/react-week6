@@ -7,6 +7,7 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 function Checkout() {
   const [cart, setCart] = useState({});
+  const{register,handleSubmit,formState:{errors}}=useForm({mode:'onChange'})
 
   const getCart = async () => {
     try {
@@ -147,6 +148,37 @@ function Checkout() {
           </tr>
         </tfoot>
       </table>
+      <div className="my-5 row justify-content-center">
+          <form className="col-md-6">
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">Email</label>
+              <input id="email" name="email" type="email" className="form-control" placeholder="請輸入 Email" />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="name" className="form-label">收件人姓名</label>
+              <input id="name" name="姓名" type="text" className="form-control" placeholder="請輸入姓名" />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="tel" className="form-label">收件人電話</label>
+              <input id="tel" name="電話" type="tel" className="form-control" placeholder="請輸入電話" />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="address" className="form-label">收件人地址</label>
+              <input id="address" name="地址" type="text" className="form-control" placeholder="請輸入地址" />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="message" className="form-label">留言</label>
+              <textarea id="message" className="form-control" cols="30" rows="10"></textarea>
+            </div>
+            <div className="text-end">
+              <button type="submit" className="btn btn-danger">送出訂單</button>
+            </div>
+          </form>
+        </div>
     </div>
   );
 }
