@@ -1,12 +1,25 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
 const API_BASE = import.meta.env.VITE_API_BASE;
+import "../assets/style.css";
 
 function Login({ getProducts, setIsAuth }) {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
+  // const [formData, setFormData] = useState({
+  //   username: "",
+  //   password: "",
+  // });
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      username: "min82814@gmail.com",
+      password: "",
+    },
   });
   //登入
   const handleInputChange = (e) => {
@@ -14,15 +27,15 @@ function Login({ getProducts, setIsAuth }) {
     setFormData((preData) => ({ ...preData, [name]: value }));
   };
   //表單按鈕驗證+token存取
-  const onSubmit = async (e) => {
-    e.preventDefault(); // 阻止表單自動刷新
+  const onSubmit = async (formData) => {
+    // e.preventDefault(); // 阻止表單自動刷新
     try {
       const res = await axios.post(`${API_BASE}/admin/signin`, formData);
       const { token, expired } = res.data; // 先在這裡拿到
       saveToken(token, expired); // 再傳給函式
 
-      getProducts();
-      setIsAuth(true);
+      // getProducts();
+      // setIsAuth(true);
     } catch (error) {
       const message = error.response?.data?.message || "表單驗證失敗";
       toast.error(message);
@@ -40,19 +53,28 @@ function Login({ getProducts, setIsAuth }) {
       {" "}
       <div className="container login">
         <h1>請登入</h1>
-        <form className="form-floating " onSubmit={onSubmit}>
+        <form className="form-floating " onSubmit={handleSubmit(onSubmit)}>
           <div className="form-floating mb-3">
             <input
               type="email"
               className="form-control"
               name="username"
               placeholder="name@example.com"
-              value={formData.username}
-              onChange={handleInputChange}
+              // value={formData.username}
+              // onChange={handleInputChange}
               id="username"
-              required
+              {...register("username", {
+                required: "請輸入 Email",
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Email 格式不正確",
+                },
+              })}
             />
             <label htmlFor="username">Email address</label>
+            {errors.username && (
+              <p className="text-danger">{errors.username.message}</p>
+            )}
           </div>
           <div className="form-floating">
             <input
@@ -60,10 +82,20 @@ function Login({ getProducts, setIsAuth }) {
               className="form-control"
               name="password"
               placeholder="Password"
-              value={formData.password}
-              onChange={(e) => handleInputChange(e)}
+              {...register("password", {
+                required: "請輸入密碼",
+                minLength: {
+                  value: 6,
+                  message: "密碼長度至少需 6 碼",
+                },
+              })}
+              // value={formData.password}
+              // onChange={(e) => handleInputChange(e)}
             />
             <label htmlFor="password">Password</label>
+            {errors.password && (
+              <p className="text-danger">{errors.password.message}</p>
+            )}
           </div>
           <button type="submit" className="btn btn-primary w-100 mt-3">
             登入
