@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 const API_BASE = import.meta.env.VITE_API_BASE;
 import "../assets/style.css";
+import { emailValidation } from "../utils/validation";
 
 function Login({ getProducts, setIsAuth }) {
   // const [formData, setFormData] = useState({
@@ -12,7 +13,7 @@ function Login({ getProducts, setIsAuth }) {
   // });
   const {
     register,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit,
   } = useForm({
     mode: "onChange",
@@ -63,13 +64,7 @@ function Login({ getProducts, setIsAuth }) {
               // value={formData.username}
               // onChange={handleInputChange}
               id="username"
-              {...register("username", {
-                required: "請輸入 Email",
-                pattern: {
-                  value: /^\S+@\S+$/i,
-                  message: "Email 格式不正確",
-                },
-              })}
+              {...register("username", emailValidation)}
             />
             <label htmlFor="username">Email address</label>
             {errors.username && (
@@ -97,7 +92,11 @@ function Login({ getProducts, setIsAuth }) {
               <p className="text-danger">{errors.password.message}</p>
             )}
           </div>
-          <button type="submit" className="btn btn-primary w-100 mt-3">
+          <button
+            type="submit"
+            className="btn btn-primary w-100 mt-3"
+            disabled={!isValid}
+          >
             登入
           </button>
         </form>

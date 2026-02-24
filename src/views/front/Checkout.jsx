@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { RotatingLines } from "react-loader-spinner";
 import * as bootstrap from "bootstrap";
 import DetailProductModal from "../../assets/components/DetailProductModal";
+import { emailValidation } from "../../utils/validation";
+import { phonePattern } from "../../utils/phonePattern";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
@@ -285,7 +287,7 @@ function Checkout() {
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-sm"
                     min="1"
-                    defaultValue={cartItem.qty}
+                    value={cartItem.qty}
                     onChange={(e) => {
                       const val = Number(e.target.value);
                       if (val >= 1 && val !== cartItem.qty) {
@@ -323,13 +325,7 @@ function Checkout() {
               type="email"
               className="form-control"
               placeholder="請輸入 Email"
-              {...register("email", {
-                required: "請輸入Email",
-                pattern: {
-                  value: /^\S+@\S+$/i,
-                  message: "Email 格式不正確",
-                },
-              })}
+              {...register("email", emailValidation)}
             />
             {errors.email && (
               <p className="text-danger">{errors.email.message}</p>
@@ -370,7 +366,7 @@ function Checkout() {
                 required: "請輸入收件人電話",
                 minLength: { value: 8, message: "電話至少輸入8碼" },
                 pattern: {
-                  value: /^\d+$/,
+                  value: phonePattern,
                   message: "電話僅能輸入數字",
                 },
               })}
